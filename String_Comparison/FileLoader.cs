@@ -18,13 +18,11 @@ namespace String_Comparison
             this.comparer = comparer;
         }
 
-        public void loadCsv(string delimiter)
+        public void loadCsv(string delimiter, int positionID, int positionString1, int positionString2)
         {
             Console.WriteLine("Starting reading csv...");
             try
             {
-
-
                 using (StreamReader reader = new StreamReader(path))
                 using (var csv = new CsvReader(reader))
                 {
@@ -40,11 +38,11 @@ namespace String_Comparison
                         {
                             var record = new Record
                             {
-                                id = csv.GetField(0),
-                                string1 = csv.GetField(1),
-                                string2 = csv.GetField(2),
-                                distance = comparer.LevenshteinDistance(csv.GetField(1), csv.GetField(2)),
-                                similarity = comparer.Similarity(csv.GetField(1), csv.GetField(2))
+                                id = csv.GetField(positionID),
+                                string1 = csv.GetField(positionString1),
+                                string2 = csv.GetField(positionString2),
+                                distance = comparer.LevenshteinDistance(csv.GetField(positionString1), csv.GetField(positionString2)),
+                                similarity = comparer.Similarity(csv.GetField(positionString1), csv.GetField(positionString2))
                             };
 
                             records.Add(record);
@@ -66,9 +64,9 @@ namespace String_Comparison
         }
 
 
-        public void saveToFile()
+        public void saveToFile(string filename)
         {
-            var savePath = @"/Users/lukasz/Desktop/Context/Files/processed.csv";
+            var savePath = Path.Combine(Directory.GetCurrentDirectory, filename);
             using (var writer = new StreamWriter(savePath))
             using (var csv = new CsvWriter(writer))
             {
