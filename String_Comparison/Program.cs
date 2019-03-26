@@ -5,12 +5,16 @@ namespace String_Comparison
 {
     class Program
     {
-        const string path = @"/Users/lukasz/Projects/String_Comparison/String_Comparison/sample22.csv";
+        //const string path = @"/Users/lukasz/Projects/String_Comparison/String_Comparison/sample22.csv";
 
         static void Main(string[] args)
         {
+
             Console.WriteLine("Working directory: " + Directory.GetCurrentDirectory());
             Console.WriteLine();
+
+            FileLoader loader = new FileLoader();
+
             //Console.WriteLine("Enter file name:");
             //var fileName = Console.ReadLine();
             //string path = string.Concat(Directory.GetCurrentDirectory(), "/", fileName);
@@ -18,27 +22,23 @@ namespace String_Comparison
             Console.WriteLine("Enter delimiter: ");
             var delimiter = Console.ReadLine();
 
-            //Console.WriteLine("Enter position of column with ID: ");
-            //var posIdColumn = InputHandler.ToNumber(Console.ReadLine());
 
-            //Console.WriteLine("Enter position of column with first string: ");
-            //var posStr1Column = InputHandler.ToNumber(Console.ReadLine());
-
-            //Console.WriteLine("Enter position of column with second string: ");
-            //var posStr2Column = InputHandler.ToNumber(Console.ReadLine());
 
             //Console.WriteLine("Enter file output: ");
             //dynamic outFileName = Console.ReadLine();
 
             Console.Clear();
 
-            Comparer comparer = new Comparer();
-            FileLoader loader = new FileLoader(path, comparer);
 
-            //loader.loadCsv(delimiter, posIdColumn, posStr1Column, posStr2Column);
-            //loader.saveToFile();
-            loader.loadCsv2(delimiter);
-            loader.proccess();
+            loader.searchForFile();
+
+            loader.loadCsv(delimiter);
+            loader.saveToFile();
+
+            //loader.loadCsv2(delimiter);
+            //loader.proccess();
+
+            Console.ReadKey();
 
         }
     }

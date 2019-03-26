@@ -11,7 +11,10 @@ namespace String_Comparison
     public class FileLoader
     {
         private string path;
-        private Comparer comparer;
+        private int posIdColumn;
+        private int posStr1Column;
+        private int posStr2Column;
+
 
         public List<Record> records = new List<Record>();
 
@@ -19,26 +22,31 @@ namespace String_Comparison
 
         public string[] headers;
 
-        public FileLoader(string path, Comparer comparer)
+        public FileLoader() { }
+
+        public FileLoader(string path)
         {
             this.path = path;
-            this.comparer = comparer;
         }
 
-        public void loadCsv(string delimiter, int positionID, int positionString1, int positionString2)
+
+        public void loadCsv(string delimiter)
         {
             Console.WriteLine("Starting reading csv...");
-            try
-            {
+            //try
+            //{
                 using (StreamReader reader = new StreamReader(path))
                 using (var csv = new CsvReader(reader))
                 {
-                    Console.WriteLine("Csv has been read...");
+                    Console.WriteLine("CSV found...");
 
                     csv.Configuration.Delimiter = delimiter;
                     csv.Read();
                     csv.ReadHeader();
-                    Console.WriteLine(csv.Context.HeaderRecord[1]);
+                    headers = csv.Context.HeaderRecord;
+
+                    showHeaders();
+
                     Console.WriteLine("Starting processing...");
                     while (csv.Read())
                     {
@@ -46,30 +54,31 @@ namespace String_Comparison
                         {
                             var record = new Record
                             {
-                                id = csv.GetField(positionID),
-                                string1 = csv.GetField(positionString1),
-                                string2 = csv.GetField(positionString2),
-                                distance = comparer.LevenshteinDistance(csv.GetField(positionString1), csv.GetField(positionString2)),
-                                similarity = comparer.Similarity(csv.GetField(positionString1), csv.GetField(positionString2))
+                                id = csv.GetField(posIdColumn),
+                                string1 = csv.GetField(posStr1Column),
+                                string2 = csv.GetField(posStr2Column),
+                                distance = Comparer.LevenshteinDistance(csv.GetField(posStr1Column), csv.GetField(posStr2Column)),
+                                similarity = Comparer.Similarity(csv.GetField(posStr1Column), csv.GetField(posStr2Column)),
+                                substring = Comparer.LongestCommonSubstring(csv.GetField(posStr1Column), csv.GetField(posStr2Column))
                             };
                                 
                             records.Add(record);
-                        } catch 
+                        } catch
                         {
                             Console.WriteLine("Cannot process your data, check delimiter...");
                             Environment.Exit(0);
                         }
-                        //Console.WriteLine(String.Format("Proccessing {0}; Distance: {1}; Similarity: {2}", string1, distance, similarity));
                     }
                 }
-            } catch
-            {
-                Console.WriteLine("Cannot find file...");
-                //Console.WriteLine(a);
-                Environment.Exit(0);
-            }
+            //} catch (Exception a)
+            //{
+            //    Console.WriteLine("Cannot find file...");
+            //    Console.WriteLine(a);
+            //    Environment.Exit(0);
+            //}
             Console.WriteLine("Successfully processed " + records.Count + " records...");
         }
+
 
         public void loadCsv2(string delimiter)
         {
@@ -104,6 +113,25 @@ namespace String_Comparison
             Console.WriteLine("Successfully loaded " + records2.Count + " records...");
         }
 
+
+        public void searchForFile()
+        {
+            Console.WriteLine("Searching for csv file...");
+            String[] paths = Directory.GetFiles(Directory.GetCurrentDirectory(), "*.csv");
+
+            if(paths.Length == 0)
+            {
+                Console.WriteLine("No csv found...");
+                Environment.Exit(0);
+            }
+
+            foreach (var p in paths)
+                Console.WriteLine(p);
+
+            path = paths[0];
+        }
+
+
         public void proccess()
         {
 
@@ -131,7 +159,7 @@ namespace String_Comparison
             //}
 
             //Console.WriteLine(records2[0].getProperty("TABLE.OWN_PROD_NAME"));
-            Console.WriteLine(records2[0].OWN_PN);
+            Console.WriteLine(records2[0]);
 
 
         }
@@ -139,9 +167,14 @@ namespace String_Comparison
 
         public void saveToFile()
         {
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "output")))
+            {
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "output"));
+                Console.WriteLine("Output folder created...");
+            }
 
-            var pathSave = Path.Combine(Directory.GetCurrentDirectory(), "output.csv");
-            
+            var pathSave = Path.Combine(Directory.GetCurrentDirectory(), "output" ,"output.csv");
+
                 //filename = Path.Combine(Directory.GetCurrentDirectory(), filename + ".csv");
 
             using (var writer = new StreamWriter(pathSave))
@@ -152,7 +185,30 @@ namespace String_Comparison
 
             Console.WriteLine("Exported to " + pathSave);
         }
+
+
+        private void showHeaders()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Headers in file:");
+            for (var i = 0; i < headers.Length; ++i)
+            {
+                Console.Write((i + 1) + "." + headers[i] + "   ");
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine("Enter position of column with ID: ");
+            posIdColumn = InputHandler.ToNumber(Console.ReadLine());
+
+            Console.WriteLine("Enter position of column with first string: ");
+            posStr1Column = InputHandler.ToNumber(Console.ReadLine());
+
+            Console.WriteLine("Enter position of column with second string: ");
+            posStr2Column = InputHandler.ToNumber(Console.ReadLine());
+        }
     }
+
 
     public class Record
     {
@@ -161,5 +217,6 @@ namespace String_Comparison
         public string string2 { get; set; }
         public int distance { get; set; }
         public double similarity { get; set; }
+        public int substring { get; set; }
     }
 }
