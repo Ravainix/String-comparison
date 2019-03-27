@@ -15,30 +15,17 @@ namespace String_Comparison
 
             FileLoader loader = new FileLoader();
 
-            //Console.WriteLine("Enter file name:");
-            //var fileName = Console.ReadLine();
-            //string path = string.Concat(Directory.GetCurrentDirectory(), "/", fileName);
-
-            Console.WriteLine("Enter delimiter: ");
-            var delimiter = Console.ReadLine();
-
-
-
-            //Console.WriteLine("Enter file output: ");
-            //dynamic outFileName = Console.ReadLine();
-
             Console.Clear();
-
 
             loader.searchForFile();
 
-            loader.loadCsv(delimiter);
+            loader.loadCsv();
             loader.saveToFile();
 
             //loader.loadCsv2(delimiter);
             //loader.proccess();
 
-            Console.ReadKey();
+            Console.ReadKey(true);
 
         }
     }
