@@ -8,6 +8,9 @@ namespace String_Comparison
 
         static public int LevenshteinDistance(string source, string target)
         {
+            source = source.ToLower();
+            target = target.ToLower();
+
             if ((source == null) || (target == null)) return 0;
             if (source == target) return 0;
 

@@ -12,10 +12,8 @@ namespace String_Comparison
 
             Console.WriteLine("Working directory: " + Directory.GetCurrentDirectory());
             Console.WriteLine();
-
             FileLoader loader = new FileLoader();
 
-            Console.Clear();
 
             loader.searchForFile();
 
@@ -25,7 +23,7 @@ namespace String_Comparison
             //loader.loadCsv2(delimiter);
             //loader.proccess();
 
-            Console.ReadKey(true);
+            Console.ReadKey();
 
         }
     }

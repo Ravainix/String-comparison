@@ -40,7 +40,9 @@ namespace String_Comparison
                 {
                     Console.WriteLine("CSV found...");
                     Console.WriteLine("Starting reading csv...");
-
+                    Console.WriteLine();
+                    Console.WriteLine("Enter delimiter: ");
+                    delimiter = Console.ReadLine();
 
                     csv.Configuration.Delimiter = delimiter;
                     csv.Read();
@@ -60,7 +62,7 @@ namespace String_Comparison
                                 string1 = csv.GetField(posStr1Column),
                                 string2 = csv.GetField(posStr2Column),
                                 distance = Comparer.LevenshteinDistance(csv.GetField(posStr1Column), csv.GetField(posStr2Column)),
-                                similarity =  Decimal.Round((decimal)Comparer.Similarity(csv.GetField(posStr1Column), csv.GetField(posStr2Column))*100, MidpointRounding.AwayFromZero),
+                                similarity =  Decimal.Round((decimal)Comparer.Similarity(csv.GetField(posStr1Column), csv.GetField(posStr2Column))*100, MidpointRounding.AwayFromZero).ToString() + "%",
                                 substring = Comparer.LongestCommonSubstring(csv.GetField(posStr1Column), csv.GetField(posStr2Column))
                             };
                                 
@@ -68,6 +70,8 @@ namespace String_Comparison
                         } catch
                         {
                             Console.WriteLine("Cannot process your data, check delimiter...");
+                            Console.ReadKey();
+
                             Environment.Exit(0);
                         }
                     }
@@ -76,6 +80,8 @@ namespace String_Comparison
             {
                 Console.WriteLine("Cannot find file...");
                 Console.WriteLine(a);
+
+                Console.ReadKey();
                 Environment.Exit(0);
             }
             Console.WriteLine("Successfully processed " + records.Count + " records...");
@@ -110,6 +116,8 @@ namespace String_Comparison
             {
                 Console.WriteLine("Cannot find file...");
                 //Console.WriteLine(a);
+                Console.ReadKey();
+
                 Environment.Exit(0);
             }
             Console.WriteLine("Successfully loaded " + records2.Count + " records...");
@@ -124,6 +132,9 @@ namespace String_Comparison
             if(paths.Length == 0)
             {
                 Console.WriteLine("No csv found...");
+
+
+                Console.ReadKey();
                 Environment.Exit(0);
             }
 
@@ -177,15 +188,21 @@ namespace String_Comparison
 
             var pathSave = Path.Combine(Directory.GetCurrentDirectory(), "output" ,"output.csv");
 
-                //filename = Path.Combine(Directory.GetCurrentDirectory(), filename + ".csv");
-
-            using (var writer = new StreamWriter(pathSave))
-            using (var csv = new CsvWriter(writer))
+            //filename = Path.Combine(Directory.GetCurrentDirectory(), filename + ".csv");
+            try
             {
-                csv.WriteRecords(records);
-            }
+                using (var writer = new StreamWriter(pathSave))
+                using (var csv = new CsvWriter(writer))
+                {
+                    csv.WriteRecords(records);
+                }
 
-            Console.WriteLine("Exported to " + pathSave);
+                Console.WriteLine("Exported to " + pathSave);
+            } catch (Exception a)
+            {
+                Console.WriteLine(a);
+            }
+            
         }
 
 
@@ -200,8 +217,7 @@ namespace String_Comparison
 
             Console.WriteLine();
 
-            Console.WriteLine("Enter delimiter: ");
-            delimiter = Console.ReadLine();
+
 
             Console.WriteLine("Enter position of column with ID: ");
             posIdColumn = InputHandler.ToNumber(Console.ReadLine());
@@ -221,7 +237,7 @@ namespace String_Comparison
         public string string1 { get; set; }
         public string string2 { get; set; }
         public int distance { get; set; }
-        public decimal similarity { get; set; }
+        public string similarity { get; set; }
         public string substring { get; set; }
     }
 }
