@@ -70,9 +70,10 @@ namespace String_Comparison
                         } catch
                         {
                             Console.WriteLine("Cannot process your data, check delimiter...");
-                            Console.ReadKey();
 
-                            Environment.Exit(0);
+                            Console.WriteLine();
+                            Console.WriteLine("Press any key to exit...");
+                            Console.ReadKey();
                         }
                     }
                 }
@@ -81,8 +82,9 @@ namespace String_Comparison
                 Console.WriteLine("Cannot find file...");
                 Console.WriteLine(a);
 
+                Console.WriteLine();
+                Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
-                Environment.Exit(0);
             }
             Console.WriteLine("Successfully processed " + records.Count + " records...");
         }
@@ -115,10 +117,10 @@ namespace String_Comparison
             catch
             {
                 Console.WriteLine("Cannot find file...");
-                //Console.WriteLine(a);
-                Console.ReadKey();
 
-                Environment.Exit(0);
+                Console.WriteLine();
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadKey();
             }
             Console.WriteLine("Successfully loaded " + records2.Count + " records...");
         }
@@ -133,48 +135,37 @@ namespace String_Comparison
             {
                 Console.WriteLine("No csv found...");
 
-
+                Console.WriteLine();
+                Console.WriteLine("Press any key to exit...");
                 Console.ReadKey();
-                Environment.Exit(0);
             }
 
-            foreach (var p in paths)
-                Console.WriteLine(p);
+            if(paths.Length > 1)
+            {
+                Console.WriteLine();
 
-            path = paths[0];
+                for (var i = 0; i < paths.Length; ++i)
+                    Console.WriteLine((i + 1) + ". " + Path.GetFileName(paths[i]));
+
+
+                Console.WriteLine("Enter file index:");
+                var index = InputHandler.ToNumber(Console.ReadLine(), paths.Length);
+                path = paths[index];
+            }
+            else
+            {
+                path = paths[0];
+            }
         }
 
 
         public void proccess()
         {
-
             for (var i = 0; i < headers.Length; ++i)
             {
                 Console.Write(i + "." + headers[i] + "   ");
             }
-
-            //foreach (var item in records2)
-            //{
-            //    IDictionary<string, object> propertyValues = item;
-
-            //    foreach (var property in propertyValues.Keys)
-            //    {
-            //        Console.WriteLine(String.Format("{0} : {1}", property, propertyValues[property]));
-            //        Console.WriteLine();
-            //    }
-            //}
-
-            //foreach(var obj in records2)
-            //{
-            //    var el = (IDictionary<string, object>)obj;
-
-            //    Console.WriteLine(el["TABLE.OWN_PROD_NAME"]);
-            //}
-
-            //Console.WriteLine(records2[0].getProperty("TABLE.OWN_PROD_NAME"));
             Console.WriteLine(records2[0]);
-
-
         }
 
 
@@ -186,7 +177,7 @@ namespace String_Comparison
                 Console.WriteLine("Output folder created...");
             }
 
-            var pathSave = Path.Combine(Directory.GetCurrentDirectory(), "output" ,"output.csv");
+            var pathSave = Path.Combine(Directory.GetCurrentDirectory(), "output" , Path.GetFileNameWithoutExtension(path) + $"_{DateTime.Now:ddMMyyyy-HHmm}.csv");
 
             //filename = Path.Combine(Directory.GetCurrentDirectory(), filename + ".csv");
             try
@@ -209,24 +200,29 @@ namespace String_Comparison
         private void showHeaders()
         {
             Console.WriteLine();
+
+            if (headers.Length == 1)
+            {
+                Console.WriteLine("Probably entered wrong delimiter...");
+            }
+
             Console.WriteLine("Headers in file:");
             for (var i = 0; i < headers.Length; ++i)
             {
                 Console.Write((i + 1) + "." + headers[i] + "   ");
             }
-
             Console.WriteLine();
 
 
 
             Console.WriteLine("Enter position of column with ID: ");
-            posIdColumn = InputHandler.ToNumber(Console.ReadLine());
+            posIdColumn = InputHandler.ToNumber(Console.ReadLine(), headers.Length);
 
             Console.WriteLine("Enter position of column with first string: ");
-            posStr1Column = InputHandler.ToNumber(Console.ReadLine());
+            posStr1Column = InputHandler.ToNumber(Console.ReadLine(), headers.Length);
 
             Console.WriteLine("Enter position of column with second string: ");
-            posStr2Column = InputHandler.ToNumber(Console.ReadLine());
+            posStr2Column = InputHandler.ToNumber(Console.ReadLine(), headers.Length);
         }
     }
 

@@ -23,6 +23,7 @@ namespace String_Comparison
             //loader.loadCsv2(delimiter);
             //loader.proccess();
 
+            Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
 
         }
